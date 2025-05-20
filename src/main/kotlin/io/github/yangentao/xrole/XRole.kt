@@ -2,8 +2,8 @@ package io.github.yangentao.xrole
 
 import io.github.yangentao.anno.Label
 import io.github.yangentao.anno.ModelField
-import io.github.yangentao.sql.*
-import io.github.yangentao.sql.clause.*
+import io.github.yangentao.sql.TableModel
+import io.github.yangentao.sql.TableModelClass
 
 /**
  * 对资源的控制权限
@@ -33,38 +33,9 @@ class XRole : TableModel() {
     @ModelField(defaultValue = "0")
     var rolevalue: Int by model
 
-    var res: Res
-        get() = Res(this.resid, this.restype)
-        set(value) {
-            this.resid = value.id
-            this.restype = value.type
-        }
-
     companion object : TableModelClass<XRole>() {
-        val RoleJoinGroup: SQLNode get() = SELECT(XRole.ALL).FROM(XRole::class JOIN XGroup::class ON (XRole::gid EQUAL XGroup::id))
-        fun byKey(gid: Long, aid: Long, resid: Long, restype: Int): XRole? {
-            return XRole.one(XRole::gid EQ gid, XRole::aid EQ aid, XRole::resid EQ resid, XRole::restype EQ restype)
-        }
-
-        fun delete(res: Res, gid: Long?, aid: Long?): Int {
-            var w: Where = res.whereRole
-            if (gid != null) {
-                w = w AND (XRole::gid EQ gid)
-            }
-            if (aid != null) {
-                w = w AND (XRole::aid EQ aid)
-            }
-            return XRole.delete(w)
-        }
-
-        fun upsert(res: Res, gid: Long, aid: Long, role: Int, conflict: Conflicts = Conflicts.Update): InsertResult {
-            return upsert(XRole::gid to gid, XRole::aid to aid, XRole::resid to res.id, XRole::restype to res.type, XRole::rolevalue to role, conflict = conflict)
-        }
-
-        fun listRes(gid: Long, resType: Int): List<XRole> {
-            return filter(XRole::gid EQ gid, XRole::aid EQ 0L, XRole::restype EQ resType).list()
-        }
 
     }
 
 }
+

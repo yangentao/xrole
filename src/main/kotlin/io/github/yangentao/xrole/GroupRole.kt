@@ -1,7 +1,5 @@
 package io.github.yangentao.xrole
 
-
-
 import io.github.yangentao.anno.Label
 import io.github.yangentao.anno.ModelField
 import io.github.yangentao.anno.OptionList
@@ -78,26 +76,20 @@ class GroupRole : ViewModel() {
     val isDept: Boolean get() = eid > 0L
 
     companion object : ViewModelClass<GroupRole>() {
-        val UNGROUP_W: Where = NOT_EXISTS(
-            SELECT("1").FROM(GroupRole AS "dg").WHERE("dg.eid" EQ GroupRole::id,  "dg.aid" EQ GroupRole::aid, "dg.resid" EQ GroupRole::resid, "dg.restype" EQ GroupRole::restype).LIMIT(1)
-        )
-
         override fun onCreateView(): SQLNode? {
             return SELECT(XGroup.ALL, XRole.ALL).FROM(XGroup JOIN XRole ON (XGroup::id EQUAL XRole::gid))
         }
 
+        val UNGROUP_W: Where = NOT_EXISTS(
+            SELECT("1").FROM(GroupRole AS "dg").WHERE("dg.eid" EQ GroupRole::id, "dg.aid" EQ GroupRole::aid, "dg.resid" EQ GroupRole::resid, "dg.restype" EQ GroupRole::restype).LIMIT(1)
+        )
+
         fun ungrouped(eid: Long): SQLNode {
-            var a = SELECT(GroupRole::resid, GroupRole::restype).FROM(GroupRole).WHERE(GroupRole::gid EQ eid)
-            var b = SELECT(GroupRole::resid, GroupRole::restype).FROM(GroupRole).WHERE(GroupRole::eid EQ eid)
+            val a = SELECT(GroupRole::resid, GroupRole::restype).FROM(GroupRole).WHERE(GroupRole::gid EQ eid)
+            val b = SELECT(GroupRole::resid, GroupRole::restype).FROM(GroupRole).WHERE(GroupRole::eid EQ eid)
             return a.."EXCEPT"..b
         }
 
-        fun listEntity(aid: Long): List<GroupRole> {
-            return filter(GroupRole::aid EQ aid, Res.zero.whereGroupRole, GroupRole::eid EQ 0L).list(GroupRole::id.ASC)
-        }
 
-        fun listDept(eid: Long, aid: Long = 0L): List<GroupRole> {
-            return filter(GroupRole::eid EQ eid, GroupRole::aid EQ aid, Res.zero.whereGroupRole).list(GroupRole::id.ASC)
-        }
     }
 }

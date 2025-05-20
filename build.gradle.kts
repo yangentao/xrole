@@ -16,7 +16,7 @@ plugins {
 
 group = "io.github.yangentao"
 
-version = "1.0.0"
+version = "1.1.10"
 val artifactName = "xrole"
 val githubLib = "xrole"
 val descLib = "Java/Kotlin role, group, account, resource."
@@ -33,7 +33,11 @@ dependencies {
     implementation(kotlin("reflect"))
     implementation(kotlin("stdlib"))
 
-    api("io.github.yangentao:hare:[1.0.11,)")
+    testImplementation("org.xerial:sqlite-jdbc:[3.45.3.0,)")
+
+    implementation("io.github.yangentao:xlog:[1.1.3,)")
+    implementation("io.github.yangentao:sql:[1.1.10,)")
+    implementation("io.github.yangentao:types:[1.1.8,)")
 }
 
 tasks.test {
