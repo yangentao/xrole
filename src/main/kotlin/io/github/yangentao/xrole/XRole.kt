@@ -14,7 +14,7 @@ import io.github.yangentao.sql.TableModelClass
  */
 class XRole : TableModel() {
     //group id
-    @ModelField(primaryKey = true, autoInc = 100)
+    @ModelField(primaryKey = true, defaultValue = "0")
     var gid: Long by model
 
     //account id

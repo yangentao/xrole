@@ -65,6 +65,12 @@ class XGroup : TableModel() {
     @TempValue
     var rolevalue: Int = RoleValue.NONE
 
+    fun setDateTime(dt: DateTime? = null) {
+        val d = dt ?: DateTime()
+        createDate = d.dateSQL
+        createTime = d.time
+    }
+
     val isEntity: Boolean get() = eid == 0L
     val isDept: Boolean get() = eid > 0L
 

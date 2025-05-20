@@ -16,7 +16,7 @@ plugins {
 
 group = "io.github.yangentao"
 
-version = "1.1.11"
+version = "1.1.12"
 val artifactName = "xrole"
 val githubLib = "xrole"
 val descLib = "Java/Kotlin role, group, account, resource."
@@ -37,7 +37,7 @@ dependencies {
 
     implementation("io.github.yangentao:xlog:[1.1.3,)")
     implementation("io.github.yangentao:sql:[1.1.10,)")
-    implementation("io.github.yangentao:types:[1.1.10,)")
+    implementation("io.github.yangentao:types:[1.1.11,)")
 }
 
 tasks.test {
