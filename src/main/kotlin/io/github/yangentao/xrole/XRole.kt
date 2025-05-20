@@ -14,7 +14,7 @@ import io.github.yangentao.sql.TableModelClass
  */
 class XRole : TableModel() {
     //group id
-    @ModelField(primaryKey = true, defaultValue = "0")
+    @ModelField(primaryKey = true, autoInc = 100)
     var gid: Long by model
 
     //account id
@@ -33,9 +33,7 @@ class XRole : TableModel() {
     @ModelField(defaultValue = "0")
     var rolevalue: Int by model
 
-    companion object : TableModelClass<XRole>() {
-
-    }
+    companion object : TableModelClass<XRole>()
 
 }
 

@@ -8,7 +8,6 @@ import io.github.yangentao.sql.clause.*
 import io.github.yangentao.sql.utils.SnowJS
 import io.github.yangentao.sql.utils.StateVal
 import io.github.yangentao.types.DateTime
-import java.sql.Timestamp
 
 /**
  * Entity(company), department
@@ -21,7 +20,7 @@ import java.sql.Timestamp
 class XGroup : TableModel() {
 
     @Label("ID")
-    @ModelField(primaryKey = true)
+    @ModelField(primaryKey = true, autoInc = 1000)
     var id: Long by model
 
     // 对部门, 指上级部门
@@ -50,7 +49,10 @@ class XGroup : TableModel() {
     var type: Int by model
 
     @ModelField
-    var createDateTime: Timestamp? by model
+    var createDate: java.sql.Date? by model
+
+    @ModelField
+    var createTime: java.sql.Time? by model
 
     @SerialMe
     @TempValue
@@ -88,6 +90,7 @@ class XGroup : TableModel() {
          * @param grouptype
          */
         fun addEntity(parentEid: Long, name: String, grouptype: Int = XGroup.T_LEAF): XGroup? {
+            val dt = DateTime()
             val r = XGroup.insert {
                 it.id = SnowJS.next()
                 it.eid = 0L
@@ -95,7 +98,8 @@ class XGroup : TableModel() {
                 it.name = name
                 it.type = grouptype
                 it.state = StateVal.NORMAL
-                it.createDateTime = DateTime.now.timestamp
+                it.createDate = dt.dateSQL
+                it.createTime = dt.time
             }
             return if (r.success) r.model else null
         }
