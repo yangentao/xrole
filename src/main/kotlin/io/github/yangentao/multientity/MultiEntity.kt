@@ -8,7 +8,6 @@ import io.github.yangentao.sql.clause.ASC
 import io.github.yangentao.sql.clause.EQ
 import io.github.yangentao.sql.clause.Where
 import io.github.yangentao.sql.filter
-import io.github.yangentao.sql.utils.SnowJS
 import io.github.yangentao.sql.utils.StateVal
 import io.github.yangentao.types.DateTime
 import io.github.yangentao.xrole.*
@@ -34,17 +33,9 @@ object MultiEntity {
                 XGroup.T_LEAF -> error("Can not create child group, this is a leaf group.")
             }
         }
-
-        val r = XGroup.insert {
-            it.id = SnowJS.next()
-            it.eid = 0L
-            it.pid = pid
-            it.name = name
-            it.type = newType
-            it.state = StateVal.NORMAL
-            it.createDateTime = DateTime.now.timestamp
-        }
-        return if (r.success) r.model else null
+        val dt = DateTime()
+        val r = XGroup.create(0L, pid, name, newType)
+        return r
     }
 
     fun listDept(eid: Long, pid: Long? = null, orderBy: String? = null, limit: Int? = null, offset: Int? = null): List<XGroup> {
@@ -63,17 +54,8 @@ object MultiEntity {
                 XGroup.T_LEAF -> error("Can not create child group, this is a leaf group.")
             }
         }
-
-        val r = XGroup.insert {
-            it.id = SnowJS.next()
-            it.eid = eid
-            it.pid = pid
-            it.name = name
-            it.type = newType
-            it.state = StateVal.NORMAL
-            it.createDateTime = DateTime.now.timestamp
-        }
-        return if (r.success) r.model else null
+        val r = XGroup.create(eid, pid, name, newType)
+        return r
     }
 
     fun assign(res: Resource, owner: Owner, role: Int) {

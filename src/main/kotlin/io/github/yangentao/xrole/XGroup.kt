@@ -5,7 +5,6 @@ package io.github.yangentao.xrole
 import io.github.yangentao.anno.*
 import io.github.yangentao.sql.*
 import io.github.yangentao.sql.clause.*
-import io.github.yangentao.sql.utils.SnowJS
 import io.github.yangentao.sql.utils.StateVal
 import io.github.yangentao.types.DateTime
 
@@ -89,12 +88,11 @@ class XGroup : TableModel() {
          * @param name 实体名
          * @param grouptype
          */
-        fun addEntity(parentEid: Long, name: String, grouptype: Int = XGroup.T_LEAF): XGroup? {
+        fun create(eid: Long, pid: Long, name: String, grouptype: Int = XGroup.T_LEAF): XGroup? {
             val dt = DateTime()
             val r = XGroup.insert {
-                it.id = SnowJS.next()
-                it.eid = 0L
-                it.pid = parentEid
+                it.eid = eid
+                it.pid = pid
                 it.name = name
                 it.type = grouptype
                 it.state = StateVal.NORMAL
@@ -102,6 +100,15 @@ class XGroup : TableModel() {
                 it.createTime = dt.time
             }
             return if (r.success) r.model else null
+        }
+
+        /**
+         * @param name 实体名
+         * @param grouptype
+         */
+        fun addEntity(parentEid: Long, name: String, grouptype: Int = XGroup.T_LEAF): XGroup? {
+            val r = XGroup.create(0L, parentEid, name, grouptype)
+            return r
         }
 
         fun edit(gid: Long, newName: String? = null, subtype: Int? = null, state: Int? = null): XGroup? {

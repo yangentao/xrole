@@ -8,9 +8,7 @@ import io.github.yangentao.sql.clause.ASC
 import io.github.yangentao.sql.clause.EQ
 import io.github.yangentao.sql.clause.Where
 import io.github.yangentao.sql.filter
-import io.github.yangentao.sql.utils.SnowJS
 import io.github.yangentao.sql.utils.StateVal
-import io.github.yangentao.types.DateTime
 import io.github.yangentao.xrole.*
 
 object SingleEntity {
@@ -34,16 +32,7 @@ object SingleEntity {
             }
         }
 
-        val r = XGroup.insert {
-            it.id = SnowJS.next()
-            it.eid = EID
-            it.pid = pid
-            it.name = name
-            it.type = newType
-            it.state = StateVal.NORMAL
-            it.createDateTime = DateTime.now.timestamp
-        }
-        return if (r.success) r.model else null
+        return XGroup.create(EID, pid, name, newType)
     }
 
     fun assign(res: Resource, owner: Owner, role: Int) {
