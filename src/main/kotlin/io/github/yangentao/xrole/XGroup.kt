@@ -82,12 +82,12 @@ class XGroup : TableModel() {
         const val T_NODE_LEAF: Int = 1 //只可创建叶子
         const val T_NODE: Int = 2 //可以创建 TNODE/TNODE_LEAF/TLEAF
 
-        fun topEntity(): XGroup? {
-            return XGroup.one(XGroup::eid EQ 0L, XGroup::pid EQ 0L)
+        fun topEntity(): List<XGroup> {
+            return XGroup.list(XGroup::eid EQ 0L, XGroup::pid EQ 0L)
         }
 
-        fun topDept(eid: Long): XGroup? {
-            return XGroup.one(XGroup::eid EQ eid, XGroup::pid EQ 0L)
+        fun topDept(eid: Long): List<XGroup> {
+            return XGroup.list(XGroup::eid EQ eid, XGroup::pid EQ 0L)
         }
 
         /**
@@ -112,8 +112,8 @@ class XGroup : TableModel() {
          * @param name 实体名
          * @param grouptype
          */
-        fun addEntity(parentEid: Long, name: String, grouptype: Int = XGroup.T_LEAF): XGroup? {
-            val r = XGroup.create(0L, parentEid, name, grouptype)
+        fun addEntity(pid: Long, name: String, grouptype: Int = XGroup.T_LEAF): XGroup? {
+            val r = XGroup.create(0L, pid, name, grouptype)
             return r
         }
 
@@ -134,13 +134,19 @@ class XGroup : TableModel() {
             return if (n > 0) e else null
         }
 
-        fun deleteDept(gid: Long): Int {
+        fun deleteDept(gid: Long, withChildren: Boolean = false): Int {
             if (gid == 0L) error("can not delete gid==0")
             val g = XGroup.oneByKey(gid) ?: return 0
             if (!g.isDept) error("Can not delete entity.")
-            XGroup.update(XGroup::pid EQ gid, XGroup::pid to g.pid)
-            XGroup.delete(XGroup::id EQ gid)
-            XRole.delete(XRole::gid EQ gid)
+            if (withChildren) {
+                val gids: Set<Long> = children(gid, includeCurrent = true).toSet()
+                XGroup.delete(XGroup::id IN gids)
+                XRole.delete(XRole::gid IN gids)
+            } else {
+                XGroup.update(XGroup::pid EQ gid, XGroup::pid to g.pid)
+                XGroup.delete(XGroup::id EQ gid)
+                XRole.delete(XRole::gid EQ gid)
+            }
             return 1
         }
 
@@ -153,6 +159,7 @@ class XGroup : TableModel() {
             if (idSet.isNotEmpty()) {
                 XRole.delete(XRole::gid IN idSet)
             }
+            XGroup.update(XGroup::pid EQ eid , XGroup::pid to 0L )
             return idSet.size
         }
 

@@ -16,7 +16,7 @@ plugins {
 
 group = "io.github.yangentao"
 
-version = "1.1.12"
+version = "1.1.13"
 val artifactName = "xrole"
 val githubLib = "xrole"
 val descLib = "Java/Kotlin role, group, account, resource."

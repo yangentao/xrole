@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package  io.github.yangentao.singleentity
 
 import io.github.yangentao.sql.Conflicts
@@ -12,15 +10,19 @@ import io.github.yangentao.sql.utils.StateVal
 import io.github.yangentao.xrole.*
 
 object SingleEntity {
-    private const val EID: Long = 1L
-    val entity: Owner = Owner(EID, 0L)
+    const val EID: Long = 1L
+    val entityOwner: Owner = Owner(EID, 0L)
 
-    fun listDept(pid: Long? = null, orderBy: String? = null, limit: Int? = null, offset: Int? = null): List<XGroup> {
+    init {
+        prepare("EntityRoot")
+    }
+
+    fun deptList(pid: Long? = null, orderBy: String? = null, limit: Int? = null, offset: Int? = null): List<XGroup> {
         val w: Where = if (pid == null) XGroup::eid EQ EID else XGroup::eid EQ EID AND (XGroup::pid EQ pid)
         return XGroup.filter(w).list(orderBy ?: XGroup::id.ASC, limit = limit, offset = offset)
     }
 
-    fun createDept(name: String, pid: Long = 0L, type: Int = XGroup.T_NODE): XGroup? {
+    fun deptCreate(name: String, pid: Long = 0L, type: Int = XGroup.T_NODE): XGroup? {
         var newType: Int = type
         val pg: XGroup? = if (pid == 0L) null else XGroup.oneByKey(pid)
         if (pg != null) {
@@ -45,14 +47,14 @@ object SingleEntity {
         res.delete(owner)
     }
 
-    fun resourceAdd(res: Resource, owner: Owner) {
+    fun resourceAdd(res: Resource, role: Int = RoleValue.ADMIN) {
         if (res.isEmpty) error("Resource is empty")
-        res.assign(owner, RoleValue.ADMIN)
+        res.assign(entityOwner, role)
     }
 
-    fun resourceRemove(res: Resource, owner: Owner): Int {
+    fun resourceRemove(res: Resource): Int {
         if (res.isEmpty) error("Resource is empty")
-        return XGroup.filter(owner.whereOwner, res.whereRes).delete()
+        return XGroup.filter(entityOwner.whereOwner, res.whereRes).delete()
     }
 
     fun resourceList(owner: Owner, resType: Int? = null, orderBy: String? = null, limit: Int? = null, offset: Int? = null): List<XRole> {

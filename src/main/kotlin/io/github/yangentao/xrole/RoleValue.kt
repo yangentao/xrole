@@ -2,6 +2,8 @@
 
 package  io.github.yangentao.xrole
 
+import kotlin.math.max
+
 val Int.toRole: RoleValue get() = RoleValue(this)
 
 data class RoleValue(val role: Int) {
@@ -27,4 +29,10 @@ object RoleBit {
     const val CREATE: Int = 4
     const val DELETE: Int = 8
     const val ROLE: Int = 16
+}
+
+fun maxRole(a: Int?, b: Int?): Int? {
+    if (a == null) return b
+    if (b == null) return a
+    return max(a, b)
 }
