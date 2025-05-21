@@ -17,6 +17,10 @@ object MultiEntity {
 
     val rootEntity: XGroup? get() = XGroup.oneByKey(rootEID)
 
+    init {
+        prepare("RootEntity")
+    }
+
     fun listEntity(pid: Long? = null, orderBy: String? = null, limit: Int? = null, offset: Int? = null): List<XGroup> {
         val w: Where = if (pid == null) XGroup::eid EQ 0L else XGroup::eid EQ 0L AND (XGroup::pid EQ pid)
         return XGroup.filter(w).list(orderBy ?: XGroup::id.ASC, limit = limit, offset = offset)

@@ -37,7 +37,7 @@ dependencies {
 
     implementation("io.github.yangentao:xlog:[1.1.3,)")
     implementation("io.github.yangentao:sql:[1.1.10,)")
-    implementation("io.github.yangentao:types:[1.1.11,)")
+    implementation("io.github.yangentao:types:[1.1.12,)")
 }
 
 tasks.test {

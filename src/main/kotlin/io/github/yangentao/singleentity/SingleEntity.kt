@@ -16,7 +16,7 @@ object SingleEntity {
     val entityOwner: Owner = Owner(EID, 0L)
 
     init {
-        prepare("EntityRoot")
+        prepare("RootEntity")
     }
 
     fun deptList(pid: Long? = null, orderBy: String? = null, limit: Int? = null, offset: Int? = null): List<XGroup> {
