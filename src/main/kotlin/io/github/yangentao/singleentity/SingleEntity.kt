@@ -9,6 +9,8 @@ import io.github.yangentao.sql.filter
 import io.github.yangentao.sql.utils.StateVal
 import io.github.yangentao.xrole.*
 
+class SingleEntityMember(aid: Long) : MemberShip(SingleEntity.EID, aid)
+
 object SingleEntity {
     const val EID: Long = 1L
     val entityOwner: Owner = Owner(EID, 0L)

@@ -43,4 +43,7 @@ open class Owner(val gid: Long, val aid: Long) {
     }
 }
 
+class GroupOwner(gid: Long) : Owner(gid, 0L)
+class AccOwner(aid: Long) : Owner(0L, aid)
+
 
