@@ -5,11 +5,11 @@ import io.github.yangentao.sql.filter
 
 open class Resource(val resid: Long, val restype: Int = 0) {
     val isEmpty: Boolean = resid == 0L
-    val whereRes: Where = XRole::resid EQ resid AND (XRole::restype EQ restype)
+    val where: Where = XRole::resid EQ resid AND (XRole::restype EQ restype)
 
     fun accRole(aid: Long): Int? {
         // 1. 指定了资源
-        XRole.filter(XRole::aid EQ aid, whereRes).list().maxOfOrNull { it.rolevalue }?.also { return it }
+        XRole.filter(XRole::aid EQ aid, where).list().maxOfOrNull { it.rolevalue }?.also { return it }
 
         return null
 //        // 2. 所属组的默认权限
@@ -39,7 +39,7 @@ open class Resource(val resid: Long, val restype: Int = 0) {
 
     fun find(owner: Owner): XRole? {
         if (this.isEmpty) error("empty resource")
-        return XRole.one(whereRes, owner.whereOwner)
+        return XRole.one(where, owner.where)
     }
 
     fun assign(owner: Owner, role: Int): Boolean {
@@ -55,12 +55,12 @@ open class Resource(val resid: Long, val restype: Int = 0) {
 
     fun revoke(owner: Owner): Int {
         if (this.isEmpty) error("empty resource")
-        return XRole.filter(owner.whereOwner, whereRes).update(XRole::rolevalue to RoleValue.NONE)
+        return XRole.filter(owner.where, where).update(XRole::rolevalue to RoleValue.NONE)
     }
 
     fun delete(owner: Owner): Int {
         if (this.isEmpty) error("empty resource")
-        return XRole.filter(owner.whereOwner, whereRes).delete()
+        return XRole.filter(owner.where, where).delete()
     }
 
     override fun equals(other: Any?): Boolean {
@@ -76,7 +76,7 @@ open class Resource(val resid: Long, val restype: Int = 0) {
         val zero: Resource = Resource(0L, 0)
 
         fun list(owner: Owner, restype: Int? = null, orderBy: String? = null, limit: Int? = null, offset: Int? = null): List<XRole> {
-            val w: Where = if (restype == null) owner.whereOwner else owner.whereOwner AND (XRole::restype EQ restype)
+            val w: Where = if (restype == null) owner.where else owner.where AND (XRole::restype EQ restype)
             return XRole.filter(w AND (XRole::resid GT 0L)).list(orderBy ?: XRole::resid.ASC, limit = limit, offset = offset)
         }
     }

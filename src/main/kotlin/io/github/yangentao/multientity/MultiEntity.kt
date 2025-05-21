@@ -75,7 +75,7 @@ object MultiEntity {
 
     fun resourceRemove(res: Resource, owner: Owner): Int {
         if (res.isEmpty) error("Resource is empty")
-        return XGroup.filter(owner.whereOwner, res.whereRes).delete()
+        return XGroup.filter(owner.where, res.where).delete()
     }
 
     fun resourceList(owner: Owner, resType: Int? = null, orderBy: String? = null, limit: Int? = null, offset: Int? = null): List<XRole> {

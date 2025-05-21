@@ -4,7 +4,7 @@ import io.github.yangentao.sql.clause.*
 import io.github.yangentao.sql.filter
 
 open class MemberShip(val gid: Long, val aid: Long) {
-    private val whereMem: Where = XRole::gid EQ gid AND (XRole::aid EQ aid) AND Resource.zero.whereRes
+    private val where: Where = XRole::gid EQ gid AND (XRole::aid EQ aid) AND Resource.zero.where
     val isEmpty: Boolean = gid == 0L && aid == 0L
 
     fun roleValue(): Int? {
@@ -19,17 +19,17 @@ open class MemberShip(val gid: Long, val aid: Long) {
 
     fun exist(): Boolean {
         if (isEmpty) error("Empty memeber")
-        return XRole.filter(whereMem).exists()
+        return XRole.filter(where).exists()
     }
 
     fun find(): XRole? {
         if (isEmpty) error("Empty memeber")
-        return XRole.filter(whereMem).one()
+        return XRole.filter(where).one()
     }
 
     fun remove(): Int {
         if (isEmpty) error("Empty memeber")
-        return XRole.filter(whereMem).delete()
+        return XRole.filter(where).delete()
     }
 
     fun save(role: Int): Boolean {
@@ -41,7 +41,7 @@ open class MemberShip(val gid: Long, val aid: Long) {
     companion object {
 
         fun list(gid: Long, orderBy: String?, limit: Int? = null, offset: Int? = null): List<XRole> {
-            return XRole.filter(XRole::gid EQ gid, XRole::aid GT 0L, Resource.zero.whereRes).list(orderBy ?: XRole::aid.ASC, limit = limit, offset = offset)
+            return XRole.filter(XRole::gid EQ gid, XRole::aid GT 0L, Resource.zero.where).list(orderBy ?: XRole::aid.ASC, limit = limit, offset = offset)
         }
     }
 }

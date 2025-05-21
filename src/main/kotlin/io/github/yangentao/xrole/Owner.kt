@@ -5,7 +5,7 @@ import io.github.yangentao.sql.clause.EQ
 import io.github.yangentao.sql.clause.Where
 
 open class Owner(val gid: Long, val aid: Long) {
-    val whereOwner: Where = XRole::gid EQ gid AND (XRole::aid EQ aid)
+    val where: Where = XRole::gid EQ gid AND (XRole::aid EQ aid)
     val isEmpty: Boolean get() = gid == 0L && aid == 0L
     val isGroup: Boolean get() = aid == 0L && gid > 0L
     val isAccount: Boolean get() = gid == 0L && aid > 0L

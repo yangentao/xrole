@@ -56,7 +56,7 @@ object SingleEntity {
 
     fun resourceRemove(res: Resource): Int {
         if (res.isEmpty) error("Resource is empty")
-        return XGroup.filter(entityOwner.whereOwner, res.whereRes).delete()
+        return XGroup.filter(entityOwner.where, res.where).delete()
     }
 
     fun resourceList(owner: Owner, resType: Int? = null, orderBy: String? = null, limit: Int? = null, offset: Int? = null): List<XRole> {
