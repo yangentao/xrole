@@ -3,7 +3,7 @@ package  io.github.yangentao.xrole
 import io.github.yangentao.sql.clause.*
 import io.github.yangentao.sql.filter
 
-class MemberShip(val gid: Long, val aid: Long) {
+open class MemberShip(val gid: Long, val aid: Long) {
     private val whereMem: Where = XRole::gid EQ gid AND (XRole::aid EQ aid) AND Resource.zero.whereRes
     val isEmpty: Boolean = gid == 0L && aid == 0L
 

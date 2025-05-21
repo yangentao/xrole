@@ -3,7 +3,7 @@ package  io.github.yangentao.xrole
 import io.github.yangentao.sql.clause.*
 import io.github.yangentao.sql.filter
 
-class Resource(val resid: Long, val restype: Int = 0) {
+open class Resource(val resid: Long, val restype: Int = 0) {
     val isEmpty: Boolean = resid == 0L
     val whereRes: Where = XRole::resid EQ resid AND (XRole::restype EQ restype)
 
