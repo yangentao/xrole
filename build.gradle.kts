@@ -7,7 +7,7 @@ buildscript {
     }
 }
 plugins {
-    kotlin("jvm") version "2.1.20"
+    kotlin("jvm") version "2.2.0"
     signing
     id("maven-publish")
     id("org.jetbrains.dokka") version "2.0.0"
@@ -16,7 +16,7 @@ plugins {
 
 group = "io.github.yangentao"
 
-version = "1.1.13"
+version = "2.0.0"
 val artifactName = "xrole"
 val githubLib = "xrole"
 val descLib = "Java/Kotlin role, group, account, resource."
@@ -35,9 +35,9 @@ dependencies {
 
     testImplementation("org.xerial:sqlite-jdbc:[3.45.3.0,)")
 
-    implementation("io.github.yangentao:xlog:[1.1.3,)")
-    implementation("io.github.yangentao:sql:[1.1.10,)")
-    implementation("io.github.yangentao:types:[1.1.12,)")
+    implementation("io.github.yangentao:xlog:[2.0.0,)")
+    implementation("io.github.yangentao:sql:[2.0.0,)")
+    implementation("io.github.yangentao:types:[2.0.0,)")
 }
 
 tasks.test {
