@@ -1,24 +1,20 @@
-@file:Suppress("unused")
+@file:Suppress("unused", "ConstPropertyName")
 
 package io.github.yangentao.multientity
 
-import io.github.yangentao.sql.Conflicts
 import io.github.yangentao.sql.clause.AND
 import io.github.yangentao.sql.clause.ASC
 import io.github.yangentao.sql.clause.EQ
 import io.github.yangentao.sql.clause.Where
 import io.github.yangentao.sql.filter
-import io.github.yangentao.sql.utils.StateVal
 import io.github.yangentao.types.DateTime
 import io.github.yangentao.xrole.*
 
 object MultiEntity {
-    const val rootEID: Long = 1L
-
-    val rootEntity: XGroup? get() = XGroup.oneByKey(rootEID)
+    val rootEntity: XGroup? get() = XGroup.oneByKey(RootEntity.EID)
 
     init {
-        prepare("RootEntity")
+        RootEntity.prepare(etype = XGroup.T_NODE)
     }
 
     fun listEntity(pid: Long? = null, orderBy: String? = null, limit: Int? = null, offset: Int? = null): List<XGroup> {
@@ -100,18 +96,6 @@ object MultiEntity {
 
     fun member(mem: MemberShip): XRole? {
         return mem.find()
-    }
-
-    fun prepare(rootEntityName: String) {
-        XGroup.upsert(
-            XGroup::id to rootEID,
-            XGroup::name to rootEntityName,
-            XGroup::pid to 0L,
-            XGroup::eid to 0L,
-            XGroup::state to StateVal.NORMAL,
-            XGroup::type to XGroup.T_NODE,
-            conflict = Conflicts.Ignore
-        )
     }
 
 }

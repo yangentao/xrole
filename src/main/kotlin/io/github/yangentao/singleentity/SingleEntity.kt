@@ -1,26 +1,23 @@
 package  io.github.yangentao.singleentity
 
-import io.github.yangentao.sql.Conflicts
 import io.github.yangentao.sql.clause.AND
 import io.github.yangentao.sql.clause.ASC
 import io.github.yangentao.sql.clause.EQ
 import io.github.yangentao.sql.clause.Where
 import io.github.yangentao.sql.filter
-import io.github.yangentao.sql.utils.StateVal
 import io.github.yangentao.xrole.*
 
-class SingleEntityMember(aid: Long) : MemberShip(SingleEntity.EID, aid)
+class SingleEntityMember(aid: Long) : MemberShip(RootEntity.EID, aid)
 
 object SingleEntity {
-    const val EID: Long = 1L
-    val entityOwner: Owner = Owner(EID, 0L)
+    val entityOwner: Owner = Owner(RootEntity.EID, 0L)
 
     init {
-        prepare("RootEntity")
+        RootEntity.prepare(etype = XGroup.T_LEAF)
     }
 
     fun deptList(pid: Long? = null, orderBy: String? = null, limit: Int? = null, offset: Int? = null): List<XGroup> {
-        val w: Where = if (pid == null) XGroup::eid EQ EID else XGroup::eid EQ EID AND (XGroup::pid EQ pid)
+        val w: Where = if (pid == null) XGroup::eid EQ RootEntity.EID else XGroup::eid EQ RootEntity.EID AND (XGroup::pid EQ pid)
         return XGroup.filter(w).list(orderBy ?: XGroup::id.ASC, limit = limit, offset = offset)
     }
 
@@ -28,7 +25,7 @@ object SingleEntity {
         var newType: Int = type
         val pg: XGroup? = if (pid == 0L) null else XGroup.oneByKey(pid)
         if (pg != null) {
-            if (pg.eid != EID) error("错误的组, eid错误.")
+            if (pg.eid != RootEntity.EID) error("错误的组, eid错误.")
             when (pg.type) {
                 XGroup.T_NODE -> newType = type
                 XGroup.T_NODE_LEAF -> newType = XGroup.T_LEAF
@@ -36,7 +33,7 @@ object SingleEntity {
             }
         }
 
-        return XGroup.create(EID, pid, name, newType)
+        return XGroup.create(RootEntity.EID, pid, name, newType)
     }
 
     fun assign(res: Resource, owner: Owner, role: Int) {
@@ -77,18 +74,6 @@ object SingleEntity {
 
     fun member(mem: MemberShip): XRole? {
         return mem.find()
-    }
-
-    fun prepare(entityName: String) {
-        XGroup.upsert(
-            XGroup::id to EID,
-            XGroup::name to entityName,
-            XGroup::pid to 0L,
-            XGroup::eid to 0L,
-            XGroup::state to StateVal.NORMAL,
-            XGroup::type to XGroup.T_LEAF,
-            conflict = Conflicts.Ignore
-        )
     }
 
 }

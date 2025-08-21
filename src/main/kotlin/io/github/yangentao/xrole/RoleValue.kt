@@ -12,7 +12,7 @@ data class RoleValue(val role: Int) {
     val canWrite: Boolean get() = role and RoleBit.WRITE != 0
     val canCreate: Boolean get() = role and RoleBit.CREATE != 0
     val canDelete: Boolean get() = role and RoleBit.DELETE != 0
-    val canAssign: Boolean get() = role and RoleBit.ROLE != 0
+    val canAssign: Boolean get() = role and RoleBit.ASSIGN != 0
 
     companion object {
         const val NONE: Int = 0
@@ -28,7 +28,7 @@ object RoleBit {
     const val WRITE: Int = 2
     const val CREATE: Int = 4
     const val DELETE: Int = 8
-    const val ROLE: Int = 16
+    const val ASSIGN: Int = 16
 }
 
 fun maxRole(a: Int?, b: Int?): Int? {
